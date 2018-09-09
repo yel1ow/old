@@ -1,0 +1,52 @@
+CheckNext       macro
+                local @@CNCReady,@@CNExit
+                jc   @@CNCReady
+                or   di,di
+                jnz  @@CNExit
+@@CNCReady:     add  dx,1
+                call SwitchGran
+@@CNExit:
+                endm
+
+CheckNextM      macro Name
+                local @@CNCReady,@@CNExit
+                jc   @@CNCReady
+                or   di,di
+                jnz  @@CNExit
+@@CNCReady:     add  dx,1
+                call &Name&SwitchGran
+@@CNExit:
+                endm
+
+ErrorI          macro ErrNum
+                push ds
+                push cs
+                pop  ds
+                mov  dx,offset Error&ErrNum
+                call Error
+                pop  ds
+                mov  _Result,&ErrNum
+                endm
+
+TestRegister    macro SegReg,OffsReg
+                local @@Exit
+                push  ax dx
+                mov   ax,SegReg:[OffsReg]
+                cmp   ax,SegReg:[OffsReg+6]
+                jnz   @@Exit
+                mov   ax,SegReg:[OffsReg+2]
+                cmp   ax,SegReg:[OffsReg+8]
+                jnz   @@Exit
+                mov   ax,SegReg:[OffsReg]
+                mov   dx,SegReg:[OffsReg+2]
+                mul   dx
+                add   ax,4
+                adc   dx,0
+                or    dx,dx
+                jnz   @@Exit
+                cmp   ax,SegReg:[OffsReg+4]
+                jnz   @@Exit
+                add   OffsReg,6
+@@Exit:
+                pop   dx ax
+                endm

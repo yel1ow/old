@@ -1,0 +1,32 @@
+# 
+# Wavefront material file
+# Converted by the DEEP Exploration 
+# Right Hemisphere, LTD
+# http://www.righthemisphere.com/
+# 
+newmtl glass
+	 Ka 0 0 0
+	 Kd 0.792157 0.956863 1
+	 Ks 0.673333 0.813333 0.85
+	 illum 2
+	 Ns 362.039
+newmtl rune
+	 Ka 0 0 0
+	 Kd 0 0.545098 0.682353
+	 Ks 0 0.354314 0.443529
+	 illum 2
+	 Ns 256
+map_Kd runes.jpg
+newmtl liquid
+	 Ka 0 0 0
+	 Kd 0.858824 0.34902 0.819608
+	 Ks 0.214706 0.0872549 0.204902
+	 illum 2
+	 Ns 22.6274
+map_Kd refmap.jpg
+newmtl blue
+	 Ka 0 0 0
+	 Kd 0 0.545098 0.682353
+	 Ks 0 0.354314 0.443529
+	 illum 2
+	 Ns 256

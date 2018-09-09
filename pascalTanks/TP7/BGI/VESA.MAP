@@ -1,0 +1,11 @@
+
+ Start  Stop   Length Name               Class
+
+ 00000H 04666H 04667H CODE               
+
+Error: Undefined symbol MODEATTRS in module VESA.ASM
+Error: Undefined symbol LOADPAGE in module VESA.ASM
+Error: Undefined symbol BASE in module VESA.ASM
+Program entry point at 0000:0000
+Warning: No stack
+

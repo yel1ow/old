@@ -1,0 +1,2 @@
+Damage    AOE       TipTarget TipDamage CoolDown  CastTime(x10) LifeTime(x10) Effect EffectDur(x10)  Buff
+  ### 

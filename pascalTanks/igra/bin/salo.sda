@@ -1,0 +1,15 @@
+program SDA;
+var d,x1,x2,a,b,c:real;
+begin
+read(a,b,c);
+d:=b*b-4*a*c;
+if d<0 then writeln('решений нет')
+       else begin
+              x1=(-b-sqrt(d))/(2*a);
+              x2=(-b-sqrt(d))/(2*a);
+            end
+              writeln ('x1=',x1);
+              writeln ('x2=',x2);
+              end
+              end.
+

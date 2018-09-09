@@ -1,0 +1,131 @@
+Turbo Assembler	 Version 3.2	    03/09/00 01:05:12	    Page 1
+cmos.asm
+Редактор CMOS и	RTS памяти
+
+
+      1
+      2					 MASM
+      3	    0000			 MODEL	 small
+      4
+      5					 ;******************************************************************************
+      6
+      7					 .386
+      8
+      9					 public	get_screeng_mode,set_screeng_mode,clear_screeng,print_el
+     10
+     11					 ;******************************************************************************
+     12
+     13	    0000			 .stack	 256	 ;сегмент стека	************************************************
+     14
+     15					 ;******************************************************************************
+     16
+     17	    0000			 .code	 ;сегмент кода
+     18	    0000  ??				 screeng_mode	 DB	 ?	 ;режим	экрана
+     19
+     20					 ;процедура определения	текущего графического режима ***************************
+     21					 ;выходные параметры:
+     22					 ;screeng_mode - номер трафического режима
+     23	    0001				 get_screeng_mode proc far
+     24	    0001  50					 push	 ax
+     25	    0002  B4 0F					 mov	 ah,0Fh
+     26	    0004  CD 10					 int	 10h
+     27	    0006  2E: A2 0000r				 mov	 cs:screeng_mode,al
+     28
+     29	    000A  58					 pop	 ax
+     30	    000B  CB					 ret
+     31	    000C				 get_screeng_mode endp
+     32					 ;******************************************************************************
+     33
+     34					 ;процедура установки графического режима **************************************
+     35					 ;входные параметры:
+     36					 ;screeng_mode - номер графического режима который ныжно установить
+     37	    000C				 set_screeng_mode proc far
+     38	    000C  B4 00					 mov	 ah,00h
+     39	    000E  2E: A0 0000r				 mov	 al,cs:screeng_mode
+     40	    0012  CD 10					 int	 10h
+     41
+     42	    0014  CB					 ret
+     43	    0015				 set_screeng_mode endp
+     44					 ;******************************************************************************
+     45
+     46					 ;процедура очистки экрана *****************************************************
+     47	    0015				 clear_screeng proc far
+     48	    0015  B4 00					 mov	 ah,00h
+     49	    0017  B0 03					 mov	 al,03h
+     50	    0019  CD 10					 int	 10h
+     51
+     52	    001B  B4 11					 mov	 ah,11h
+     53	    001D  B0 12					 mov	 al,12h
+     54	    001F  B3 00					 mov	 bl,00h
+     55	    0021  CD 10					 int	 10h
+     56
+     57	    0023  CB					 ret
+Turbo Assembler	 Version 3.2	    03/09/00 01:05:12	    Page 2
+cmos.asm
+Редактор CMOS и	RTS памяти
+
+
+     58	    0024				 clear_screeng endp
+     59					 ;******************************************************************************
+     60
+     61
+     62					 ;процедура вывода символа с учетом цвета *************************************
+     63					 ;входные параметры
+     64					 ;tek_el - выводимый символ
+     65	    0024				 print_el proc far
+     66		  =0004				 arg tek_el,color:byte=args
+     67	    0024  50					 push	 ax
+     68	    0025  52					 push	 dx
+     69
+     70	    0026  8B 46	06				 mov	 ax,tek_el	 ;заносим в al вторую цифру числа
+     71	    0029  B4 09					 mov	 ah,09h		 ;номер	процедуры BIOS
+     72	    002B  8A 5E	08				 mov	 bl,color	   ;выбор цвета
+     73	    002E  B9 0001				 mov	 cx,01h		 ;количество повторений
+     74	    0031  CD 10					 int	 10h		 ;вызов	процедуры BIOS
+     75
+     76	    0033  5A					 pop	 dx
+     77	    0034  58					 pop	 ax
+     78	    0035  CA 0004				 ret args
+     79	    0038				 print_el endp
+     80
+     81					 end
+Turbo Assembler	 Version 3.2	    03/09/00 01:05:12	    Page 3
+Symbol Table
+Редактор CMOS и	RTS памяти
+
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "03/09/00"
+??FILENAME			  Text	 "cmos	  "
+??TIME				  Text	 "01:05:12"
+??VERSION			  Number 0314
+@32BIT				  Text	 0
+@CODE				  Text	 _TEXT
+@CODESIZE			  Text	 0
+@CPU				  Text	 0F0FH
+@CURSEG				  Text	 _TEXT
+@DATA				  Text	 DGROUP
+@DATASIZE			  Text	 0
+@FILENAME			  Text	 CMOS
+@INTERFACE			  Text	 00H
+@MODEL				  Text	 2
+@STACK				  Text	 DGROUP
+@WORDSIZE			  Text	 2
+ARGS				  Number 0004
+CLEAR_SCREENG			  Far	 _TEXT:0015
+COLOR				  Number [DGROUP:BP+0008]
+GET_SCREENG_MODE		  Far	 _TEXT:0001
+PRINT_EL			  Far	 _TEXT:0024
+SCREENG_MODE			  Byte	 _TEXT:0000
+SET_SCREENG_MODE		  Far	 _TEXT:000C
+TEK_EL				  Number [DGROUP:BP+0006]
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DGROUP				  Group
+  STACK				  16  0100 Para	  Stack	  STACK
+  _DATA				  16  0000 Word	  Public  DATA
+_TEXT				  16  0038 Word	  Public  CODE
+

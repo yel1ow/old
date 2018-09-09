@@ -1,0 +1,145 @@
+Turbo Assembler	 Version 3.2	    03/09/00 01:52:38	    Page 1
+prob.asm
+Редактор CMOS и	RTS памяти
+
+
+      1
+      2					 MASM
+      3	    0000			 MODEL	 small
+      4
+      5					 ;******************************************************************************
+      6
+      7					 .386
+      8
+      9					 public	get_screeng_mode,set_screeng_mode,set_screen_mode,clear_screeng,print_el
+     10
+     11					 ;******************************************************************************
+     12
+     13	    0000			 .stack	 256	 ;сегмент стека	************************************************
+     14
+     15					 ;******************************************************************************
+     16
+     17	    0000			 .code	 ;сегмент кода
+     18	    0000  ????				 screeng_mode	 Dw	 ?	 ;режим	экрана
+     19
+     20					 ;процедура определения	текущего графического режима ***************************
+     21					 ;выходные параметры:
+     22					 ;screeng_mode - номер трафического режима
+     23	    0002				 get_screeng_mode proc far
+     24	    0002  B4 0F					 mov	 ah,0Fh
+     25	    0004  CD 10					 int	 10h
+     26	    0006  2E: A3 0000r				 mov cs:screeng_mode,ax
+     27	    000A  CB					 ret
+     28	    000B				 get_screeng_mode endp
+     29					 ;******************************************************************************
+     30
+     31					 ;процедура установки графического режима **************************************
+     32					 ;входные параметры:
+     33					 ;screeng_mode - номер графического режима который ныжно установить
+     34	    000B				 set_screeng_mode proc far
+     35	    000B  B4 00					 mov	 ah,00h
+     36	    000D  2E: A1 0000r				 mov	 al,cs:screeng_mode
+**Error** prob.asm(37) Operand types do	not match
+     37	    0011  CD 10					 int	 10h
+     38
+     39	    0013  CB					 ret
+     40	    0014				 set_screeng_mode endp
+     41	    0014				 set_screen_mode proc far
+     42		  =0002				 arg mode:word=args
+     43	    0014  8B 46	06				 mov	 ax,mode
+     44	    0017  B4 00					 mov	 ah,00h
+     45	    0019  CD 10					 int	 10h
+     46
+     47	    001B  CA 0002				 ret args
+     48	    001E				 set_screen_mode endp
+     49					 ;******************************************************************************
+     50
+     51					 ;процедура очистки экрана *****************************************************
+     52	    001E				 clear_screeng proc far
+     53	    001E  B4 00					 mov	 ah,00h
+     54	    0020  B0 03					 mov	 al,03h
+     55	    0022  CD 10					 int	 10h
+     56
+Turbo Assembler	 Version 3.2	    03/09/00 01:52:38	    Page 2
+prob.asm
+Редактор CMOS и	RTS памяти
+
+
+     57	    0024  B4 11					 mov	 ah,11h
+     58	    0026  B0 12					 mov	 al,12h
+     59	    0028  B3 00					 mov	 bl,00h
+     60	    002A  CD 10					 int	 10h
+     61
+     62	    002C  CB					 ret
+     63	    002D				 clear_screeng endp
+     64					 ;******************************************************************************
+     65
+     66
+     67					 ;процедура вывода символа с учетом цвета *************************************
+     68					 ;входные параметры
+     69					 ;tek_el - выводимый символ
+     70	    002D				 print_el proc far
+     71		  =0004				 arg tek_el,color:word=args
+     72	    002D  50					 push	 ax
+     73	    002E  52					 push	 dx
+     74
+     75	    002F  8B 46	06				 mov	 ax,tek_el	 ;заносим в al вторую цифру числа
+     76	    0032  B4 09					 mov	 ah,09h		 ;номер	процедуры BIOS
+     77	    0034  8B 5E	08				 mov	 bx,color	   ;выбор цвета
+     78	    0037  B9 0001				 mov	 cx,01h		 ;количество повторений
+     79	    003A  CD 10					 int	 10h		 ;вызов	процедуры BIOS
+     80
+     81	    003C  5A					 pop	 dx
+     82	    003D  58					 pop	 ax
+     83	    003E  CA 0004				 ret args
+     84	    0041				 print_el endp
+     85
+     86					 end
+Turbo Assembler	 Version 3.2	    03/09/00 01:52:38	    Page 3
+Symbol Table
+Редактор CMOS и	RTS памяти
+
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "03/09/00"
+??FILENAME			  Text	 "prob	  "
+??TIME				  Text	 "01:52:38"
+??VERSION			  Number 0314
+@32BIT				  Text	 0
+@CODE				  Text	 _TEXT
+@CODESIZE			  Text	 0
+@CPU				  Text	 0F0FH
+@CURSEG				  Text	 _TEXT
+@DATA				  Text	 DGROUP
+@DATASIZE			  Text	 0
+@FILENAME			  Text	 PROB
+@INTERFACE			  Text	 00H
+@MODEL				  Text	 2
+@STACK				  Text	 DGROUP
+@WORDSIZE			  Text	 2
+ARGS				  Number 0004
+CLEAR_SCREENG			  Far	 _TEXT:001E
+COLOR				  Number [DGROUP:BP+0008]
+GET_SCREENG_MODE		  Far	 _TEXT:0002
+MODE				  Number [DGROUP:BP+0006]
+PRINT_EL			  Far	 _TEXT:002D
+SCREENG_MODE			  Word	 _TEXT:0000
+SET_SCREENG_MODE		  Far	 _TEXT:000B
+SET_SCREEN_MODE			  Far	 _TEXT:0014
+TEK_EL				  Number [DGROUP:BP+0006]
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DGROUP				  Group
+  STACK				  16  0100 Para	  Stack	  STACK
+  _DATA				  16  0000 Word	  Public  DATA
+_TEXT				  16  0041 Word	  Public  CODE
+Turbo Assembler	 Version 3.2	    03/09/00 01:52:38	    Page 4
+Error Summary
+Редактор CMOS и	RTS памяти
+
+
+**Error** prob.asm(37) Operand types do	not match
+

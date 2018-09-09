@@ -1,0 +1,34 @@
+program detiali;
+uses crt;
+type zavod=record
+            name:char;
+            schena:integer;
+            kolich:integer;
+            ves:integer;
+      mass=array[1..100] of zavod;
+var m:mass;
+     maxsch,i,n:integer;
+     pdet:string[20];
+begin
+ clrscr;
+ write('Введите количество деталей  ');
+ read(n);
+ for i:=1 to n do
+  begin
+  clrscr;
+  writeln('Введите название детали  ');
+  read(m[i].name);
+  writeln('Введите цену детали ');
+  read(m[i].schena);
+  writeln('Введите кол-во деталей ');
+  read(m[i].kolich);
+  writeln('Введите вес детали ');
+  read(m[i].ves);
+  end;
+  for i:=2 to n do
+   begin
+    maxsch:=m[1].schena;
+    if m[i].schena>maxsch
+    then maxsch:=m[i].schena;
+   end;
+end.

@@ -1,0 +1,147 @@
+;       Записать с DS:DI на ES:DI CX байт
+;       Код 0 игнорируется
+WriteLine         Macro
+        local     M1,M2,M3
+        push      cx
+        cld
+M1:
+        lodsb
+        or        al,al
+        jz        M2
+        stosb
+        loop      M1
+        jmp       M3
+M2:
+        inc       di
+        loop      M1
+M3:
+        pop       cx
+                  EndM
+GetLine           Macro
+        push      cx
+        cld
+        rep movsb
+        pop       cx
+                  EndM
+
+;       Получить номер банка и смещение
+GetBankAndOffset  Macro
+        ;Вход:    CX - координата X
+        ;         AX - координата Y
+        ;Выход:   DX - банк
+        ;         DI - смещение
+        mul       word ptr cs:W
+        add       ax,cx
+        adc       dx,0
+        mov       di,ax
+        mov       ax,dx
+        mul       byte ptr cs:GranPerBank
+        mov       dx,ax
+                  EndM
+
+;       For mouse
+PutGetLine        Macro
+        local     M1,M2,M3
+        push      cx
+        cld
+M1:
+        lodsb
+        or        al,al
+        jz        M2
+        mov       ah,byte ptr es:[di]
+        stosb
+        mov       byte ptr cs:[bx],ah
+        inc       bx
+        loop      M1
+        jmp       M3
+M2:
+        mov       ah,byte ptr es:[di]
+        mov       byte ptr cs:[bx],ah
+        inc       bx
+        inc       di
+        loop      M1
+M3:
+        pop       cx
+                  EndM
+ClearLine         Macro
+        local     M1,M2,M3
+        push      cx
+        cld
+        rep movsb
+        pop       cx
+                  EndM
+
+;       For line
+KindOfLine        Macro
+        local     M1,M2,M3
+        mov       ax,x1
+        sub       ax,x2
+        jl        M1
+        jnz       M3
+        clc
+        jmp short M2
+M3:
+        mov       ax,y1
+        sub       ax,y2
+        jmp short M2
+M1:
+        mov       ax,y2
+        sub       ax,y1
+M2:
+                  EndM
+
+PixelInWindow     Macro
+        local     M1
+        push      ax
+        mov       ax,word ptr CurrentX
+        sub       ax,word ptr WinX1
+        jc        M1
+        mov       ax,word ptr WinX2
+        sub       ax,word ptr CurrentX
+        jc        M1
+        mov       ax,word ptr CurrentY
+        sub       ax,word ptr WinY1
+        jc        M1
+        mov       ax,word ptr WinY2
+        sub       ax,word ptr CurrentY
+M1:
+        pop       ax
+                  EndM
+
+WriteLine_        Macro
+        local     M1,M2,M3,M4
+        push      cx
+        cld
+M1:
+        lodsb
+        test      si,8000h
+        jz        M4
+        call      NextXMS
+        cld
+M4:
+        or        al,al
+        jz        M2
+        stosb
+        loop      M1
+        jmp       M3
+M2:
+        inc       di
+        loop      M1
+M3:
+        pop       cx
+                  EndM
+
+GetLine_          Macro
+        local     M1,M2
+        push      cx
+        cld
+M1:
+        movsb
+        test      di,8000h
+        jz        M2
+        call      NextXMSGet
+        cld
+M2:
+        loop      M1
+        pop       cx
+                  EndM

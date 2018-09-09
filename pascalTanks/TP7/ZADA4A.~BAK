@@ -1,0 +1,35 @@
+program ez;
+const m:array ['a'..'z'] of integer=(2,22,222,3,33,333,4,44,444,5,55,555,6,66,666,7,77,777,8,88,888,9,99,999,0,00);
+var k:longint;
+    i:integer;
+    c,b:char;
+begin
+  assign(input,'input.txt');
+  reset(input);
+  assign(output,'output.txt');
+  rewrite(output);
+  readln(k);
+  k:=k mod 26;
+  repeat
+  read(c);
+  if c='#' then halt;
+  if c in ['a'..'z'] then
+  c:=chr(ord(c)+k);
+  if c in ['a'..'z'] then
+  begin if m[c] mod 10=m[b] mod 10 then write('#') end
+  else begin
+       if (c in [' ','.',',']) and (b in [' ','.',','])
+       or (c in ['y','z','?']) and (b in ['y','z','?'])
+       then write('#');
+       end;
+  case c of
+  'a'..'z':write(m[c]);
+  ' ':write('1');
+  '.':write('11');
+  ',':write('111');
+  '?':write('000');
+  end;
+  b:=c;
+  until c='#';
+  close(output);
+end.

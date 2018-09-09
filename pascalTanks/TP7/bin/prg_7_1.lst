@@ -1,0 +1,166 @@
+Turbo Assembler	 Version 3.2	    01/09/00 04:13:30	    Page 1
+prg_7_1.asm
+
+
+
+      1				     ;---------Prg_7_1.asm---------------
+      2				     ;Программа	,имитирующая звук сирены.
+      3				     ;Изменение	высоты звука от	450 Гц до 2100 Гц.
+      4				     ;Используется макрос delay	(задержка).
+      5				     ;При необходимости
+      6				     ;можно поменять значение задержки (по умолчанию - для процессора Pentium).
+      7				     ;------------------------------------
+      8				     masm
+      9	0000			     model   small
+     10	0000			     stack   100h
+     11				     delay macro time
+     12				     ;макрос задержки, его текст ограничивается	директивами macro и endm.
+     13				     ;На входе - значение задержки (в мкс)
+     14					     local   ext1,iter1
+     15					     push    cx
+     16					     mov     cx,time
+     17				     ext1:
+     18					     push    cx
+     19					     mov     cx,5000
+     20				     iter1:
+     21					     loop    iter1
+     22					     pop     cx
+     23					     loop    ext1
+     24					     pop     cx
+     25				     endm
+     26	0000			     .data   ;сегмент данных
+     27	0000  0A5B		     tonelow dw	     2651    ;нижняя граница звучания =	450 Гц
+     28	0002  00		     cnt     db	     0	     ;счётчик для выхода из программы
+     29	0003  ????		     temp    dw	     ?	     ;верхняя граница звучания
+     30	0005			     .code   ;сегмент кода
+     31	0000			     main:   ;точка входа в программу
+     32	0000  B8 0000s			     mov     ax,@data	     ;связываем	регистр	ds с сегментом
+     33	0003  8E D8			     mov     ds,ax   ;данных через регистр ax
+     34	0005  33 C0			     xor     ax,ax   ;очищаем ax
+     35	0007			     go:
+     36				     ;заносим слово состояния 10110110b(0В6h) в	командный регистр (порт	43h)
+     37	0007  B0 B6			     mov     al,0B6h
+     38	0009  E6 43			     out     43h,al
+     39	000B  E4 61			     in	     al,61h  ;получим значение порта 61h в al
+     40	000D  0C 03			     or	     al,3    ;инициализируем динамик и подаем ток в порт 61h
+     41	000F  E6 61			     out     61h,al
+     42	0011  B9 0823			     mov     cx,2083 ;количество шагов ступенчатого изменения тона
+     43	0014			     musicup:
+     44				     ;в	ax значение нижней границы частоты
+     45	0014  A1 0000r			     mov     ax,tonelow
+     46	0017  E6 42			     out     42h,al  ;в	порт 42h младшее слово ax :al
+     47	0019  86 C4			     xchg    al,ah   ;обмен между al и ah
+     48	001B  E6 42			     out     42h,al  ;в	порт 42h старшее слово ax:ah
+     49	001D  83 06 0000r 01		     add     tonelow,1	     ;повышаем тон
+     50					     delay 1 ;задержка на 1 мкс
+1    51	0022  51			     push    cx
+1    52	0023  B9 0001			     mov     cx,1
+1    53	0026  51			     push    cx
+1    54	0027  B9 1388			     mov     cx,5000
+1    55	002A  E2 FCr			     loop    iter1
+**Error** prg_7_1.asm(50) DELAY(10) Expecting pointer type
+1    56	002C  59			     pop     cx
+Turbo Assembler	 Version 3.2	    01/09/00 04:13:30	    Page 2
+prg_7_1.asm
+
+
+
+1    57	002D  E2 FEr			     loop    ext1
+**Error** prg_7_1.asm(50) DELAY(12) Expecting pointer type
+1    58	002F  59			     pop     cx
+     59	0030  8B 16 0000r		     mov     dx,tonelow	     ;в	dx текущее значение высоты
+     60	0034  89 16 0003r		     mov     temp,dx ;temp - верхнее значение высоты
+     61	0038  E2 DA			     loop    musicup ;повторить	цикл повышения
+     62	003A  B9 0823			     mov     cx,2083 ; восстановить счетчик цикла
+     63	003D			     musicdown:
+     64	003D  A1 0003r			     mov     ax,temp ;в	ax верхнее значение высоты
+     65	0040  E6 42			     out     42h,al  ;в	порт 42h младшее слово ax :al
+     66	0042  8A C4			     mov     al,ah   ;обмен между al и ah
+     67	0044  E6 42			     out     42h,al;в порт 42h старшее слово ax	:ah
+     68	0046  83 2E 0003r 01		     sub     temp,1  ;понижаем высоту
+     69					     delay 1 ;задержка на 1 мкс
+1    70	004B  51			     push    cx
+1    71	004C  B9 0001			     mov     cx,1
+1    72	004F  51			     push    cx
+1    73	0050  B9 1388			     mov     cx,5000
+1    74	0053  E2 FCr			     loop    iter1
+**Error** prg_7_1.asm(61) DELAY(10) Expecting pointer type
+1    75	0055  59			     pop     cx
+1    76	0056  E2 FEr			     loop    ext1
+**Error** prg_7_1.asm(61) DELAY(12) Expecting pointer type
+1    77	0058  59			     pop     cx
+     78	0059  E2 E2			     loop musicdown  ;повторить	цикл понижения
+     79	005B			     nosound:
+     80	005B  E4 61			     in	     al,61h  ;получим значение порта 61h в AL
+     81	005D  24 FC			     and     al,0FCh ;выключить	динамик
+     82	005F  E6 61			     out     61h,al  ;в	порт 61h
+     83	0061  BA 0A5B			     mov     dx,2651 ;для последующих циклов
+     84	0064  89 16 0000r		     mov     tonelow,dx
+     85	0068  FE 06 0002r		     inc     cnt     ;увеличиваем счётчик проходов, то есть
+     86				     ;количество звучаний сирены
+     87	006C  80 3E 0002r 05		     cmp     cnt,5   ;5	раз ?
+     88	0071  75 94			     jne     go	     ;если нет,	идти на	метку go
+     89	0073				     exit:
+     90	0073  B8 4C00			     mov     ax,4c00h	     ;стандартный выход
+     91	0076  CD 21			     int     21h
+     92				     end main	     ;конец программы
+Turbo Assembler	 Version 3.2	    01/09/00 04:13:30	    Page 3
+Symbol Table
+
+
+
+
+Symbol Name			  Type	 Value
+
+??DATE				  Text	 "01/09/00"
+??FILENAME			  Text	 "prg_7_1 "
+??TIME				  Text	 "04:13:30"
+??VERSION			  Number 0314
+@32BIT				  Text	 0
+@CODE				  Text	 _TEXT
+@CODESIZE			  Text	 0
+@CPU				  Text	 0101H
+@CURSEG				  Text	 _TEXT
+@DATA				  Text	 DGROUP
+@DATASIZE			  Text	 0
+@FILENAME			  Text	 PRG_7_1
+@INTERFACE			  Text	 00H
+@MODEL				  Text	 2
+@STACK				  Text	 DGROUP
+@WORDSIZE			  Text	 2
+CNT				  Byte	 DGROUP:0002
+EXIT				  Near	 _TEXT:0073
+EXT1				  Number [DGROUP:BP-0002]
+GO				  Near	 _TEXT:0007
+ITER1				  Number [DGROUP:BP-0004]
+MAIN				  Near	 _TEXT:0000
+MUSICDOWN			  Near	 _TEXT:003D
+MUSICUP				  Near	 _TEXT:0014
+NOSOUND				  Near	 _TEXT:005B
+TEMP				  Word	 DGROUP:0003
+TONELOW				  Word	 DGROUP:0000
+
+Macro Name
+
+DELAY
+
+Groups & Segments		  Bit Size Align  Combine Class
+
+DGROUP				  Group
+  STACK				  16  0100 Para	  Stack	  STACK
+  _DATA				  16  0005 Word	  Public  DATA
+_TEXT				  16  0078 Word	  Public  CODE
+Turbo Assembler	 Version 3.2	    01/09/00 04:13:30	    Page 4
+Error Summary
+
+
+
+**Error** prg_7_1.asm(50) DELAY(6) Symbol already different kind: EXT1
+**Error** prg_7_1.asm(50) DELAY(9) Symbol already different kind: ITER1
+**Error** prg_7_1.asm(50) DELAY(10) Expecting pointer type
+**Error** prg_7_1.asm(50) DELAY(12) Expecting pointer type
+**Error** prg_7_1.asm(61) DELAY(6) Symbol already different kind: EXT1
+**Error** prg_7_1.asm(61) DELAY(9) Symbol already different kind: ITER1
+**Error** prg_7_1.asm(61) DELAY(10) Expecting pointer type
+**Error** prg_7_1.asm(61) DELAY(12) Expecting pointer type
+

@@ -1,0 +1,24 @@
+
+ Start         Length Name               Class
+
+  0001:0000    7F71H  _SEG_1             TEXT
+  0002:0000    7B86H  _SEG_2             TEXT
+  0003:0000    F010H  _SEG_3             TEXT
+  0004:0000    7DC1H  _SEG_4             TEXT
+  0005:0000    4C5DH  _SEG_5             TEXT
+  0006:0000    6CEEH  _SEG_6             TEXT
+  0007:0000    62E3H  _SEG_7             TEXT
+  0008:0000    7FCDH  _SEG_8             TEXT
+  0009:0000    3FD2H  _SEG_9             TEXT
+  000A:0000    2B44H  _SEG_A             DATA
+  000B:0000    5928H  _SEG_B             TEXT
+  000C:0000    543AH  _SEG_C             TEXT
+  000D:0000    1B44H  _SEG_D             TEXT
+  000E:0000    48FAH  _SEG_E             DATA
+  000F:0000    0000H  _SEG_F             DATA
+
+ Address         Publics by Value
+
+
+Program entry point at 0001:00F4
+

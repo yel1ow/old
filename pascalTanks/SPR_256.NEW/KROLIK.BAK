@@ -1,0 +1,208 @@
+{$n+}
+program krolik;
+uses graph,crt;
+var
+ gd,gm,ggg:Integer;
+ x,y,z,dy,dx,t:longint;
+ c:char;
+ a,xOh,yOh,dxOh,dyOh,color:longint;
+ r,r2:extended;
+  tb,tvz,aa,bb,bx,by,i,ii,iii:longint;
+ fb:Boolean;
+ lifeOh,lifekrol,shoot,kill:Integer;
+ str1,str2,str3,str4:string;
+begin
+
+  gd:=vga;
+  gm:=vgahi;
+  initgraph(gd,gm,'c:\tools\tp7');
+  fb:=false;
+  randomize;
+  tb:=5;
+  tvz:=3;
+  x:=300;
+  y:=300;
+  xOh:=200;
+  yOh:=200;
+  t:=10;
+  color:=14;
+  lifekrol:=10;
+  lifeOh:=5;
+  shoot:=1000;
+  kill:=0;
+{  settextstyle(0,0,2);{шрифт,направление,размер}
+  setcolor(2);
+  outtextxy(200,getmaxy div 2,'"Охота на кролика"');
+  readln;
+  cleardevice;
+  setcolor(2);
+  outtextxy(200,getmaxy div 2,'ПРОГРАММА САЛИХОВА КИРИЛЛА!');
+  outtextxy(200,getmaxy div 2+40,'если вы захотите НЕЛЕГАЛЬНО скопировать эту программу,');
+  outtextxy(200,getmaxy div 2+60,'вы автоматически удалите свою опирационную систему,');
+  outtextxy(200,getmaxy div 2+80,'и не сможете поиграть в эту замечательную игру!');
+  outtextxy(200,getmaxy div 2+100,'                                                ');
+  outtextxy(200,getmaxy div 2+160,'ПРЕДУПРЕЖДЕНИЕ:детям до 16 лет играть строго запрещается!');
+  readln;
+  cleardevice;
+  repeat
+   str(lifeOh,str1);
+   str(lifekrol,str2);
+   str(shoot,str3);
+   str(kill,str4);
+   setcolor(15);
+   rectangle(0,0,639,479);
+   line(0,50,getmaxx,50);
+   setfillstyle(1,0);
+   bar(120,5,130,18);
+   outtextxy(10,10,'life : '+str1);
+   bar(120,25,140,48);
+   outtextxy(10,30,'rabbit: '+str2);
+   bar(490+50,5,637,18);
+   outtextXy(640-150,10,'gans: '+str3);
+   bar(490+50,25,637,48);
+   outtextxy(640-150,30,'kills: '+str4);
+   x:=x+dx;
+   y:=y+dy;
+   setfillstyle(1,color);
+   fillellipse(x,y,20,20);
+   xOh:=xOh+dxOh;
+   yOh:=yOh+dyOh;
+   setcolor(10);
+   line(xOh-20,yOh,xOh+20,yOh);
+   line(xOh,yOh-20,xOh,yOh+20);
+   circle(xOh,yOh,15);
+   delay(100);
+   t:=t-1;
+   if t=0 then begin
+                  z:=random(4);
+                  case z of
+                   0: dy:=-3;
+                   1: dy:=3;
+                   2: dx:=3;
+                   3: dx:=-3;
+                 end;
+                t:=random(10)+5;
+              end;
+   setcolor(0);
+   setfillstyle(1,0);
+   fillellipse(x,y,20,20);
+  if ((x+dx)<20)or((x+dx)>620)
+   then dx:=-dx;
+  if ((y+dy)<70)or((y+dy)>460)
+   then dy:=-dy;
+    setcolor(0);
+    setcolor(0);
+   line(xOh-20,yOh,xOh+20,yOh);
+   line(xOh,yOh-20,xOh,yOh+20);
+   circle(xOh,yOh,15);
+
+  if keypressed
+  then begin
+        c:=readkey;
+        case c of
+        #72: begin
+               dyOh:=-15;
+               dxOh:=0;
+             end;
+        #75: begin
+               dxOh:=-15;
+               dyOh:=0;
+             end;
+        #77: begin
+               dxOh:=15;
+               dyOh:=0;
+             end;
+        #80:begin
+              dyOh:=15;
+              dxOh:=0;
+            end;
+        #13: begin
+                dyOh:=0;
+                dxOh:=0;
+             end;
+        ' ': begin
+               shoot:=shoot-1;
+               r:=Sqrt(sqr(x-xOh)+sqr(y-yOh));
+               if r<=20
+               then begin
+                      x:=random(620);
+                      y:=random(410)+50;
+                      setfillstyle(1,color);
+                      color:=color+1;
+                      kill:=kill+1;
+                      lifekrol:=lifekrol-1;
+                   end
+             end;
+       end;
+
+      end;
+         if ((xOh+dxOh)<20)or((xOh+dxOh)>620)
+         then   dxOh:=0;
+         if ((yOh+dyOh)<65)or((yOh+dyOh)>460)
+         then   dyOh:=0;
+         tb:=tb-1;
+         if tb=0
+         then begin
+                setcolor(lightred);
+                Aa:=x;
+                bb:=y;
+                  circle(aa,bb,15);
+                bx:=x+10;
+                by:=y+10;
+                tvz:=random(105)+5;
+                fb:=true;
+              end;
+                if fb=true
+                then begin
+                       setcolor(lightred);
+                       circle(aa,bb,15);
+                       tvz:=tvz-1;
+                       if tvz=0
+                       then begin
+                              for i:=1 to 135 do
+                              begin
+                                setcolor(5);
+                                circle(aa,bb,i);
+                              end;
+                                delay(250);
+                              for ii:=1 to 135 do
+                              begin
+                                setcolor(0);
+                                circle(aa,bb,ii);
+                              end;
+                              fb:=false;
+                              tb:=random(215)+5;
+              r2:=Sqrt(sqr(aa-xOh)+sqr(bb-yOh));
+              if r2<=135
+              then begin
+                     lifeOh:=lifeOh-1;
+                     xOh:=random(640);
+                     yOh:=random(420)+50;
+                   end;
+                            end;
+              end;
+         until (c=#27) or (lifeoh=0) or (lifekrol=0);
+  if lifeoh=0 then
+  begin
+    setfillstyle(1,0);
+    bar(0,0,638,478);
+    settextstyle(0,0,2);
+    setcolor(2);
+    outtextxy(250,getmaxy div 2,'GAME OVER!');
+    readln;
+  end;
+  if lifekrol=0 then
+  begin
+    setfillstyle(1,0);
+    bar(0,0,640,480);
+    {settextstyle(0,0,2);}
+    setcolor(2);
+    outtextxy(220,getmaxy div 2,'Ну ты даешь,прямо как РЭМБО!');
+    readln;
+  end;
+  if c=#27 then
+  setcolor(2);
+  outtextxy(220,getmaxy div 2,'Ну и вали!');
+  readln;
+  closegraph;
+end.
